@@ -90,7 +90,7 @@ def main():
     log.info("Preprocessing waveforms")
     for voltage in config.voltages:
         df = analyse_waveforms(f"{dut_path}/{config.dut_name}.h5", voltage)
-        save_analysis(df, f"{dut_path}/{config.dut_name}_{voltage}V.csv")
+        save_analysis(df, f"{dut_path}/{config.dut_name}_{int(voltage)}V.csv")
     log.info("Waveforms analysis was done")
 
 

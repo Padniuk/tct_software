@@ -2,7 +2,7 @@ annotated-types==0.7.0
 asttokens==3.0.1
 backcall==0.2.0
 black==24.8.0
-CAENpy==0.0.0
+git+https://github.com/SengerM/CAENpy.git
 click==8.1.8
 comm==0.2.3
 contourpy==1.1.1
@@ -37,7 +37,6 @@ pathspec==0.12.1
 pexpect==4.9.0
 pickleshare==0.7.5
 pillow==10.4.0
-pkg_resources==0.0.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.52
 psutil==7.2.2
@@ -48,14 +47,12 @@ pydantic-settings==2.8.1
 pydantic_core==2.27.2
 Pygments==2.19.2
 pyparsing==3.1.4
-PyQt6==6.7.1
-PyQt6-Qt6==6.7.3
-PyQt6_sip==13.8.0
+PyQt6==6.4.0
 pyqtgraph==0.13.3
 pyserial==3.5
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-PyticularsTCT==220323
+git+https://github.com/SengerM/PyticularsTCT.git
 pytz==2025.2
 pyusb==1.2.1
 PyVISA==1.14.1
@@ -66,10 +63,10 @@ qt6-applications==6.5.0.2.3
 scikit-image==0.21.0
 scipy==1.10.1
 seaborn==0.13.2
-signals==0
+git+https://github.com/SengerM/signals.git
 six==1.17.0
 stack-data==0.6.3
-TeledyneLeCroyPy==0.1
+git+https://github.com/SengerM/TeledyneLeCroyPy
 tifffile==2023.7.10
 tokenize-rt==6.0.0
 tomli==2.4.0

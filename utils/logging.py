@@ -3,11 +3,11 @@ import sys
 import logging
 
 
-def setup_logging(dut_path):
+def setup_logging(dut_path, log_level):
     log_format = "%(asctime)s|%(levelname)s|%(funcName)s|%(message)s"
     date_format = "%Y-%m-%d %H:%M:%S"
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(log_level)
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(logging.Formatter(log_format, date_format))

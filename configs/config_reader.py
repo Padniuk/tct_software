@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     output_folder: str
+    wafer_type: str
     dut_name: str
     logging_level: str
     current_compliance_amperes: float
@@ -11,9 +12,11 @@ class Settings(BaseSettings):
     laser_dac: int
     laser_frequency: int
     voltages: List[float]
-    x_span: float
-    y_span: float
-    step_xy: float
+    orientation: str
+    u_span: float
+    v_span: float
+    step_u: float
+    step_v: float
     rotation_angle_deg: float
     n_triggers_per_position: int
     remove_pads: Optional[List[int]] = None

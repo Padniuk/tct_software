@@ -29,60 +29,60 @@ class TCTControl(PyticularsTCT.TCT):
         self.laser.off()
 
     def create_list_of_positions(self):
-        device_center_xyz = config.device_center
-        x_span = config.x_span
-        y_span = config.y_span
-        x_step = config.step_xy
-        y_step = config.step_xy
+        device_center_xyz = np.array(config.device_center)
+        u_span = config.u_span
+        v_span = config.v_span
+        u_step = config.step_u
+        v_step = config.step_v
         rotation_angle_deg = config.rotation_angle_deg
         readout_pads_to_remove = config.remove_pads
 
-        x = np.linspace(-x_span / 2, x_span / 2, int(x_span / x_step + 1))
-        y = np.linspace(-y_span / 2, y_span / 2, int(y_span / y_step + 1))
+        orientation = getattr(config, "orientation", "xy").lower().strip()
 
-        xx, yy = np.meshgrid(x, y)
+        u_coords = np.linspace(-u_span / 2, u_span / 2, int(u_span / u_step + 1))
+        v_coords = np.linspace(-v_span / 2, v_span / 2, int(v_span / v_step + 1))
+        uu, vv = np.meshgrid(u_coords, v_coords)
 
-        phi = np.arctan2(yy, xx)
-        cos = np.cos(rotation_angle_deg * np.pi / 180 + phi)
-        sin = np.sin(rotation_angle_deg * np.pi / 180 + phi)
-        rr = (xx**2 + yy**2) ** 0.5
-        xx, yy = rr * cos, rr * sin
+        phi = np.arctan2(vv, uu)
+        rr = np.sqrt(uu**2 + vv**2)
+        rad = np.deg2rad(rotation_angle_deg)
+        uu, vv = rr * np.cos(rad + phi), rr * np.sin(rad + phi)
 
-        xx += device_center_xyz[0]
-        yy += device_center_xyz[1]
-        zz = xx * 0 + device_center_xyz[2]
+        axis_map = {"x": 0, "y": 1, "z": 2}
 
-        remove_these = np.full(xx.shape, False)
+        if len(orientation) != 2 or not all(c in axis_map for c in orientation):
+            raise ValueError(
+                f"Invalid orientation '{orientation}'. Use combinations of 'x', 'y', 'z' (e.g., 'xy', 'yx', 'xz')."
+            )
+
+        coords = np.tile(device_center_xyz, (uu.shape[0], uu.shape[1], 1))
+
+        u_axis_idx = axis_map[orientation[0]]
+        v_axis_idx = axis_map[orientation[1]]
+
+        coords[:, :, u_axis_idx] += uu
+        coords[:, :, v_axis_idx] += vv
+
+        remove_these = np.full(uu.shape, False)
         if isinstance(readout_pads_to_remove, dict):
             pitch = readout_pads_to_remove["pitch"]
             size = readout_pads_to_remove["size"]
             if readout_pads_to_remove["shape"] != "square":
-                raise ValueError("Only implemented for square pads. ")
+                raise ValueError("Only implemented for square pads.")
+
             for row in [-1, 1]:
                 for col in [-1, 1]:
                     remove_these |= (
-                        (xx - device_center_xyz[0] > (col * pitch - size) / 2)
-                        & (xx - device_center_xyz[0] < (col * pitch + size) / 2)
-                        & (yy - device_center_xyz[1] > (row * pitch - size) / 2)
-                        & (yy - device_center_xyz[1] < (row * pitch + size) / 2)
+                        (uu > (col * pitch - size) / 2)
+                        & (uu < (col * pitch + size) / 2)
+                        & (vv > (row * pitch - size) / 2)
+                        & (vv < (row * pitch + size) / 2)
                     )
 
-        positions = [
-            [
-                (
-                    (xx[nx, ny], yy[nx, ny], zz[nx, ny])
-                    if remove_these[nx, ny] == False
-                    else None
-                )
-                for ny in range(len(xx[nx]))
-            ]
-            for nx in range(len(xx))
-        ]
-
         flat_positions = []
-        for row in positions:
-            for pos in row:
-                if pos is not None:
-                    flat_positions.append(pos)
+        for r in range(uu.shape[0]):
+            for c in range(uu.shape[1]):
+                if not remove_these[r, c]:
+                    flat_positions.append(tuple(coords[r, c]))
 
         return flat_positions

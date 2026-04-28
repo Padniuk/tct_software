@@ -9,23 +9,38 @@ from setup import TCTControl, BiasControl, LeCroyControl
 
 
 def main():
-    dut_path = os.path.join(config.output_folder, config.dut_name)
+    dut_path = os.path.join(config.output_folder, config.wafer_type, config.dut_name)
 
     if not os.path.exists(dut_path):
         os.makedirs(dut_path)
 
-    log = setup_logging(dut_path)
+    log = setup_logging(dut_path, config.logging_level)
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     h5_filename = os.path.join(dut_path, f"{config.dut_name}.h5")
+
+    if os.path.exists(h5_filename):
+        user_input = (
+            input(
+                f"WARNING: Data file '{h5_filename}' already exists. Overwrite? (y/n): "
+            )
+            .strip()
+            .lower()
+        )
+        if user_input != "y":
+            log.info("Scan cancelled by user to prevent overwriting existing data.")
+            return
 
     writer = DataWriter(
         h5_filename,
         {
             "dut_name": config.dut_name,
+            "wafer_type": config.wafer_type,
             "laser_dac": config.laser_dac,
             "laser_frequency": config.laser_frequency,
-            "step_size": config.step_xy,
+            "orientation": config.orientation,
+            "step_size_u": config.step_u,
+            "step_size_v": config.step_v,
             "timestamp": timestamp,
         },
     )

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     remove_pads: Optional[List[int]] = None
     acquire_channels: List[int]
     trigger_delay_scope: Optional[int] = 30
+    oscilloscope_timeout: float
 
     class Config:
         env_file = ".env"

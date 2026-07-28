@@ -77,7 +77,7 @@ def main():
                     )
                     actual_pos = laser.stages.position
 
-                    scope.acquire_sequence(timeout=5)
+                    scope.acquire_sequence(timeout=config.oscilloscope_timeout)
 
                     data_all_channels = []
 

@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     acquire_channels: List[int]
     trigger_delay_scope: Optional[int] = 30
     oscilloscope_timeout: float
+    max_voltage: float
 
     class Config:
         env_file = ".env"

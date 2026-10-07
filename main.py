@@ -48,7 +48,9 @@ def main():
     tct = TCTControl(dac=config.laser_dac, frequency=config.laser_frequency)
     positions = tct.create_list_of_positions()
     bias = BiasControl(
-        port="/dev/ttyACM0", current_limit=config.current_compliance_amperes
+        port="/dev/ttyACM0",
+        current_limit=config.current_compliance_amperes,
+        max_voltage=config.max_voltage,
     )
     scope = LeCroyControl()
 

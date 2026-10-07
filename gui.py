@@ -9,7 +9,9 @@ if __name__ == "__main__":
 
     scope = LeCroyControl()
     bias = BiasControl(
-        port="/dev/ttyACM0", current_limit=config.current_compliance_amperes
+        port="/dev/ttyACM0",
+        current_limit=config.current_compliance_amperes,
+        max_voltage=config.max_voltage,
     )
     tct = TCTControl(dac=config.laser_dac, frequency=config.laser_frequency)
 

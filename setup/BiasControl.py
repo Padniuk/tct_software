@@ -6,10 +6,13 @@ from CAENpy.CAENDesktopHighVoltagePowerSupply import (
 
 
 class BiasControl:
-    def __init__(self, port="/dev/ttyACM0", channel=0, current_limit=1e-6):
+    def __init__(
+        self, port="/dev/ttyACM0", channel=0, current_limit=1e-6, max_voltage=400
+    ):
         self.caen_unit = CAENDesktopHighVoltagePowerSupply(port=port)
         self.hv = OneCAENChannel(caen=self.caen_unit, channel_number=channel)
-
+        self.max_voltage = max_voltage
+        self.hv.set("MAXV", max_voltage)
         self.hv.current_compliance = current_limit
 
     def __enter__(self):
@@ -25,7 +28,7 @@ class BiasControl:
         self.hv.output = "off"
 
     def set_voltage(self, volts):
-        if abs(volts) > 500:
+        if abs(volts) > self.max_voltage:
             raise ValueError(f"Voltage {volts} exceeds software safety limit!")
         self.hv.ramp_voltage(volts)
 
